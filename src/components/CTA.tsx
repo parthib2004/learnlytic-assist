@@ -1,11 +1,10 @@
-
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const CTA = () => {
   return (
-    <section className="py-16 bg-gradient-to-r from-purple-600 to-indigo-600">
+    <section className="py-16 bg-[#6C5CE7]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center justify-between">
           <div className="mb-8 lg:mb-0 lg:pr-8">
@@ -21,20 +20,19 @@ const CTA = () => {
             <Button
               asChild
               size="lg"
-              className="bg-white text-purple-600 hover:bg-purple-50"
+              className="bg-white hover:bg-gray-50 text-[#6C5CE7] font-medium rounded-xl"
             >
-              <Link to="/writing-analysis">
+              <Link to="/writing-analysis" className="flex items-center">
                 Try Writing Analysis
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button
               asChild
-              variant="outline"
               size="lg"
-              className="border-white text-white hover:bg-purple-500"
+              className="bg-[#8A7EF2] hover:bg-[#7A6EE4] text-white font-medium border-0 rounded-xl"
             >
-              <a href="#">Contact Us</a>
+              <Link to="/contact">Contact Us</Link>
             </Button>
           </div>
         </div>

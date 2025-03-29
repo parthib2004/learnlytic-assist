@@ -1,9 +1,11 @@
-
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Brain, HeadphonesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { speak, stopSpeaking } from '@/lib/textToSpeech';
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -15,10 +17,53 @@ const navItems = [
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/writing-analysis');
+    } else {
+      navigate('/auth');
+    }
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleTextToSpeech = () => {
+    if (isSpeaking) {
+      stopSpeaking();
+      setIsSpeaking(false);
+      return;
+    }
+    
+    // Get the main content of the page
+    const mainContent = document.querySelector('main');
+    if (mainContent) {
+      const text = mainContent.textContent || '';
+      speak(text);
+      setIsSpeaking(true);
+    }
   };
 
   return (
@@ -55,17 +100,43 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="mr-2 text-gray-600 hover:text-purple-600"
-              title="Text-to-Speech"
+              className={cn(
+                "mr-2 transition-colors",
+                isSpeaking 
+                  ? "text-purple-600 bg-purple-50" 
+                  : "text-gray-600 hover:text-purple-600"
+              )}
+              title={isSpeaking ? "Stop Speaking" : "Text-to-Speech"}
+              onClick={handleTextToSpeech}
             >
               <HeadphonesIcon className="h-5 w-5" />
             </Button>
-            <Button variant="outline" className="mr-2">
-              Sign In
-            </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700">
-              Get Started
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600">
+                  Welcome, {user.displayName || user.email}
+                </span>
+                <Button variant="outline" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  className="mr-2"
+                  onClick={() => navigate('/auth')}
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  className="bg-purple-600 hover:bg-purple-700"
+                  onClick={handleGetStarted}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
           <div className="flex items-center md:hidden">
             <Button
@@ -104,12 +175,32 @@ const Navbar = () => {
               </Link>
             ))}
             <div className="pt-4 flex flex-col space-y-2">
-              <Button variant="outline" className="w-full">
-                Sign In
-              </Button>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Get Started
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-600">
+                    Welcome, {user.displayName || user.email}
+                  </span>
+                  <Button variant="outline" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => navigate('/auth')}
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={handleGetStarted}
+                  >
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
