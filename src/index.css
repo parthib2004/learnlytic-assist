@@ -1,5 +1,6 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -85,15 +86,43 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  html {
+    font-family: 'Lexend', system-ui, sans-serif;
+  }
+
+  body {
+    @apply leading-dyslexic tracking-dyslexic;
+    /* Light cream background is easier on the eyes */
+    @apply bg-[#FFFAF0] dark:bg-gray-900;
+  }
+
+  /* Make text more readable */
+  p, span, div {
+    @apply tracking-dyslexic leading-dyslexic;
+  }
+
+  /* Increase contrast for important text */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-readable font-semibold tracking-dyslexic;
+    @apply text-gray-900 dark:text-gray-50;
+  }
+
+  /* Add more spacing between paragraphs */
+  p {
+    @apply mb-6;
+  }
+
+  /* Make links more obvious */
+  a {
+    @apply underline decoration-2 underline-offset-2;
+    @apply text-purple-600 dark:text-purple-400;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {

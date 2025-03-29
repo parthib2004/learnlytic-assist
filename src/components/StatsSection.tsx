@@ -19,7 +19,7 @@ const stats = [
     bgColor: "bg-blue-100",
   },
   {
-    value: "3+",
+    value: "30+",
     label: "Disabilities",
     sublabel: "detected",
     icon: Target,
@@ -37,21 +37,21 @@ const StatsSection = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="bg-white rounded-2xl p-4 shadow-sm flex items-start gap-4 min-w-[150px] flex-1"
+          className="bg-white rounded-2xl p-4 shadow-sm flex items-start gap-4 min-w-[150px] flex-1 font-readable"
         >
           <div className={`${stat.bgColor} p-3 rounded-full flex-shrink-0`}>
             <stat.icon className={`h-5 w-5 ${stat.color}`} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className={`text-xl font-semibold ${stat.color}`}>
+              <span className={`text-xl font-semibold tracking-dyslexic ${stat.color}`}>
                 {stat.value}
               </span>
-              <span className="text-gray-700 truncate">
+              <span className="text-gray-700 truncate tracking-dyslexic">
                 {stat.label}
               </span>
             </div>
-            <p className="text-sm text-gray-500 truncate">
+            <p className="text-sm text-gray-500 truncate leading-dyslexic">
               {stat.sublabel}
             </p>
           </div>
