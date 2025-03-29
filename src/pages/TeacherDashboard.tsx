@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Activity, AlertCircle, BarChart3, BookOpen, Brain, ChevronRight, 
-  Clock, FileText, Flag, Layers, LineChart, Users
+  Clock, FileText, Flag, Layers, LineChart, Users, CheckCircle
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
