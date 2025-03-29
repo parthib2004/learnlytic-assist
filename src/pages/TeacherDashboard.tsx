@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,9 +9,21 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Activity, AlertCircle, BarChart3, BookOpen, Brain, ChevronRight, 
-  Clock, FileText, Flag, Layers, LineChart, Users, CheckCircle
+  Clock, FileText, Flag, Layers, LineChart as LineChartIcon, Users, CheckCircle
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend
+} from "recharts";
 
 const TeacherDashboard = () => {
   const [selectedTab, setSelectedTab] = useState("overview");
@@ -100,6 +111,21 @@ const TeacherDashboard = () => {
     }
   };
 
+  const performanceData = students.map(student => ({
+    name: student.name,
+    dyslexia: student.assessments.dyslexia,
+    dysgraphia: student.assessments.dysgraphia,
+    adhd: student.assessments.adhd,
+    progress: student.progress
+  }));
+
+  const progressData = [
+    { month: 'Jan', reading: 65, writing: 45, focus: 50 },
+    { month: 'Feb', reading: 68, writing: 52, focus: 55 },
+    { month: 'Mar', reading: 75, writing: 58, focus: 62 },
+    { month: 'Apr', reading: 85, writing: 65, focus: 70 },
+  ];
+
   return (
     <>
       <Helmet>
@@ -123,13 +149,7 @@ const TeacherDashboard = () => {
           </Button>
         </div>
         
-        <Alert className="mb-8 bg-blue-50 border-blue-200">
-          <AlertCircle className="h-4 w-4 text-blue-600" />
-          <AlertTitle className="text-blue-800">Demo Version</AlertTitle>
-          <AlertDescription className="text-blue-700">
-            This is a demo version of the teacher dashboard. In a complete implementation, you would see real-time data for your students.
-          </AlertDescription>
-        </Alert>
+        {/* Removed Demo Version Alert */}
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -155,7 +175,7 @@ const TeacherDashboard = () => {
               <div className="flex justify-between items-center">
                 <div className="text-2xl font-bold">{classStats.averageImprovement}%</div>
                 <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <LineChart className="h-6 w-6 text-green-600" />
+                  <LineChartIcon className="h-6 w-6 text-green-600" />
                 </div>
               </div>
               <p className="text-xs text-green-600 mt-2">↑ 7% increase</p>
@@ -437,26 +457,72 @@ const TeacherDashboard = () => {
             </TabsContent>
             
             <TabsContent value="performance" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Student Performance</CardTitle>
-                  <CardDescription>
-                    Track improvement and activity completion over time
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed">
-                    <div className="text-center p-8">
-                      <BarChart3 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Performance Charts</h3>
-                      <p className="text-sm text-gray-500 max-w-md">
-                        In a complete implementation, this section would display detailed charts and 
-                        graphs of student performance data over time.
-                      </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Student Assessment Distribution</CardTitle>
+                    <CardDescription>
+                      Comparison of assessment scores across students
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={performanceData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="dyslexia" fill="#9333ea" name="Reading Skills" />
+                          <Bar dataKey="dysgraphia" fill="#3b82f6" name="Writing Skills" />
+                          <Bar dataKey="adhd" fill="#22c55e" name="Focus & Attention" />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Class Progress Trends</CardTitle>
+                    <CardDescription>
+                      Monthly progress tracking in key areas
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={progressData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Line 
+                            type="monotone" 
+                            dataKey="reading" 
+                            stroke="#9333ea" 
+                            name="Reading Skills"
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="writing" 
+                            stroke="#3b82f6" 
+                            name="Writing Skills"
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="focus" 
+                            stroke="#22c55e" 
+                            name="Focus & Attention"
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
             
             <TabsContent value="plans" className="space-y-4">
